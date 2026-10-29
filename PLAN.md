@@ -1,6 +1,6 @@
 # Content Viewer implementation plan
 
-Status: **M0 only is authorized. Stop before M1.** Read `REQUIREMENTS.md` and `AGENTS.md` first. Work sequentially in this chat and project directory; do not create agents, worktrees, or extra planning documents. Each later milestone needs explicit authorization; verify, report results and limitations, then stop.
+Status: **M1 complete; stop before M2.** The user explicitly authorized M1 project setup and Vitest installation. Read `REQUIREMENTS.md` and `AGENTS.md` first. Work sequentially in this chat and project directory; do not create agents, worktrees, or extra planning documents. Each later milestone needs explicit authorization; verify, report results and limitations, then stop.
 
 Architecture: keep Next.js App Router, strict TypeScript, Tailwind, and npm. Use Route Handlers plus private Vercel Blob, deriving the initial gallery catalog from object listings without a separate database. Serve uploaded HTML through a response-sandboxed route into an iframe that allows scripts without same-origin privileges. Details and proposed compatibility defaults are in `REQUIREMENTS.md`.
 
@@ -39,7 +39,9 @@ These are target active-work allocations for the assignment, including M0; autho
 
 ## M1 - Running baseline and quality checks
 
-**Scope / likely files:** Verify the existing dev server and scaffold with its installed Next.js guides. Update `package.json` / `package-lock.json`; add minimal `vitest.config.ts`. Keep the current ESLint/TypeScript/Tailwind setup unless a verified failure requires a focused fix. Establish initial meaningful tests in `src/lib/upload-validation.test.ts` with only the small pure validation helper needed in `src/lib/upload-validation.ts`; no upload route, UI flow, or storage integration yet.
+**Scope / likely files:** Verify the existing dev server and scaffold with its installed Next.js guides. Update `package.json` / `package-lock.json`; add minimal `vitest.config.mts`. Keep the current ESLint/TypeScript/Tailwind setup unless a verified failure requires a focused fix. Establish initial meaningful tests in `src/utils/upload-validation.test.ts` with only the small pure validation helper needed in `src/utils/upload-validation.ts`; no upload route, UI flow, or storage integration yet.
+
+**User additions:** Keep components in `src/components` and helpers in `src/utils`. Add `src/components/RULES.md`, link it from `AGENTS.md`, and follow Vercel's React/Next.js guidance. Update the existing README with setup and check commands.
 
 **Planned check:** `npm run check` must run, in order, ESLint (`eslint .`), route type generation + typechecking (`next typegen && tsc --noEmit`), tests (`vitest run`), and production build (`next build`). Use npm scripts and minimal Node-environment Vitest configuration; do not install React testing plugins or a browser harness unless needed. Do not allow an empty suite to pass. Next.js supports generating route types before the compiler check. [Type generation guidance](https://nextjs.org/docs/app/api-reference/cli/next#next-typegen-options).
 
@@ -51,7 +53,7 @@ These are target active-work allocations for the assignment, including M0; autho
 
 ## M2 - Production foundation
 
-**Scope / likely files:** Connect this project to Vercel and a private persistent Blob store. Add only the official Blob SDK to `package.json` / lockfile. Use ignored project-local `.vercel/` and environment files as needed; update `README.md` with setup names/instructions, never secret values. Add the small server-only storage module at `src/lib/content-storage.ts` if needed for a live storage smoke check. Record the production URL and milestone evidence in this plan, without extra planning files. No new public diagnostic endpoint is needed.
+**Scope / likely files:** Connect this project to Vercel and a private persistent Blob store. Add only the official Blob SDK to `package.json` / lockfile. Use ignored project-local `.vercel/` and environment files as needed; update `README.md` with setup names/instructions, never secret values. Add the small server-only storage module at `src/utils/content-storage.ts` if needed for a live storage smoke check. Record the production URL and milestone evidence in this plan, without extra planning files. No new public diagnostic endpoint is needed.
 
 **Acceptance:** The application shell is deployed to the actual production target and opens publicly over HTTPS without an owner session or deployment-protection bypass. Server-side storage write/list/read succeeds against a private store; anonymous direct storage retrieval is denied. The same store remains connected for subsequent deployments. Credentials are absent from client code, logs, and tracked files.
 
@@ -61,7 +63,7 @@ These are target active-work allocations for the assignment, including M0; autho
 
 ## M3 - Working vertical slice
 
-**Scope / likely files:** Implement upload -> private persistent storage -> gallery -> isolated interactive viewer. Likely files: `src/app/page.tsx`, `src/app/globals.css`, `src/app/layout.tsx`, `src/components/upload-form.tsx`, `src/components/content-gallery.tsx`, `src/app/view/[id]/page.tsx`, `src/app/api/content/route.ts`, `src/app/api/content/[id]/route.ts`, and small `src/lib/content-storage.ts`, `upload-validation.ts`, and `viewer-policy.ts` helpers with colocated tests. Extract components only where they earn their place. Update usage notes in `README.md`.
+**Scope / likely files:** Implement upload -> private persistent storage -> gallery -> isolated interactive viewer. Likely files: `src/app/page.tsx`, `src/app/globals.css`, `src/app/layout.tsx`, `src/components/upload-form.tsx`, `src/components/content-gallery.tsx`, `src/app/view/[id]/page.tsx`, `src/app/api/content/route.ts`, `src/app/api/content/[id]/route.ts`, and small `src/utils/content-storage.ts`, `upload-validation.ts`, and `viewer-policy.ts` helpers with colocated tests. Extract components only where they earn their place. Update usage notes in `README.md`.
 
 **Acceptance:** A1-A3 and A6-A9 work for the required slice; all catalog entries remain reachable via listing cursors. Use unique filename-safe keys under `content/`, independent of duplicate filenames. Reject invalid uploads before a storage write. Show basic loading, empty, success, and failure/retry states. Reads/listings use current persistent data; no local filesystem, memory, or browser-only persistence. The iframe and every raw HTML response enforce the documented script-enabled sandbox without same-origin privileges. Secrets remain server-side. Deploy the slice to production before minute 50.
 
@@ -98,10 +100,20 @@ These are target active-work allocations for the assignment, including M0; autho
 ## Milestone status
 
 - [x] M0 - Documents prepared; document verification recorded below.
-- [ ] M1 - Not authorized or started.
+- [x] M1 - Running baseline, folder guidance, and full quality check verified locally.
 - [ ] M2 - Not authorized or started.
 - [ ] M3 - Not authorized or started.
 - [ ] M4 - Not authorized or started.
 - [ ] M5 - Optional; not authorized or started.
 
 M0 evidence: both PDF pages reviewed as text and rendered images; scaffold/configuration/guidance inspected; document scope and acceptance coverage reviewed. `git diff --check` and document whitespace checks passed; only the three requested documents changed; the generated Next.js preamble was removed per the user's follow-up; temporary PDF renders were removed. No runtime or production success is claimed.
+
+M1 evidence (2026-10-29):
+
+- Local Next.js 16.4.3 dev server returned `/` with HTTP 200; the actual in-app browser displayed the starter heading, images, and links. No product UI or upload endpoint was added.
+- `npm run check` exited 0: ESLint; `next typegen && tsc --noEmit` with strict typing; Vitest 4.1.12, 26/26 real validation tests; Turbopack production build with `/` and `/_not-found` generated. Validation was tested against an unimplemented function first, then the implementation. No storage mocks or cloud calls were involved.
+- Vitest 5 conflicted with existing Node 20 type definitions; installed compatible Vitest 4 instead. No existing dependency versions changed in the lockfile. `.mts` makes the Vitest config explicitly ESM without changing the application's module configuration.
+- Added component rules linked from `AGENTS.md`, using Vercel's official React Best Practices. Helpers and tests live in `src/utils`; future helper paths in this plan were updated to match the user's folder convention.
+- Starting Next.js reproduced automatic reinsertion of the generated agent preamble. Set documented `agentRules: false`; the restarted dev server removed the managed block and preserved project guidance. Existing ESLint, strict TypeScript, and Tailwind/Turbopack configuration otherwise remain intact.
+- The first restricted build could not fetch Google fonts and cached a CSS-worker port-permission failure. Cleared only generated `.next/cache/turbopack` and reran the full check with required network/process permissions; all stages passed. Fresh builds need Google's font service for the starter's Geist fonts.
+- Final source/diff review and `git diff --check` passed. M1 is local baseline evidence only; production access, persistence, HTTP/storage boundaries, and browser isolation remain pending their milestones. M2 is not authorized or started.
