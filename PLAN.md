@@ -31,9 +31,9 @@ These are target active-work allocations for the assignment, including M0; autho
 
 **Scope / files:** Inspect scaffold/configuration and existing guidance; read both PDF pages including visuals. Create/update only `REQUIREMENTS.md`, `AGENTS.md`, and `PLAN.md`; record assumptions, acceptance criteria, milestones, and evidence boundaries.
 
-**Acceptance:** PDF requirements and user additions are distinct from proposed defaults and bonuses. All six named ambiguities are explicit. Generated Next.js guidance is preserved. No application/configuration changes, dependencies, cloud setup, or deployment.
+**Acceptance:** PDF requirements and user additions are distinct from proposed defaults and bonuses. All six named ambiguities are explicit. Per the user's follow-up, `AGENTS.md` contains project-specific guidance without the generated Next.js preamble. No application/configuration changes, dependencies, cloud setup, or deployment.
 
-**Verification:** Review each document against the request and PDF; run `git diff --check`; inspect tracked/untracked changes and compare the generated block with its original. Remove temporary PDF render files. This is document verification only.
+**Verification:** Review each document against the request and PDF; run `git diff --check`; inspect tracked/untracked changes and confirm the generated Next.js preamble is absent from `AGENTS.md`. Remove temporary PDF render files. This is document verification only.
 
 **Dependencies:** None. **Checkpoint:** finish M0, summarize, and wait for M1 authorization.
 
@@ -104,4 +104,4 @@ These are target active-work allocations for the assignment, including M0; autho
 - [ ] M4 - Not authorized or started.
 - [ ] M5 - Optional; not authorized or started.
 
-M0 evidence: both PDF pages reviewed as text and rendered images; scaffold/configuration/guidance inspected; document scope and acceptance coverage reviewed. `git diff --check` and document whitespace checks passed; only the three requested documents changed; the generated Next.js block matches the original exactly; temporary PDF renders were removed. No runtime or production success is claimed.
+M0 evidence: both PDF pages reviewed as text and rendered images; scaffold/configuration/guidance inspected; document scope and acceptance coverage reviewed. `git diff --check` and document whitespace checks passed; only the three requested documents changed; the generated Next.js preamble was removed per the user's follow-up; temporary PDF renders were removed. No runtime or production success is claimed.

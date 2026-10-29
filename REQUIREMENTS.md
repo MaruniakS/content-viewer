@@ -21,7 +21,7 @@ Source: [Technical On-Site Assignment (3).pdf](</Users/maruniaks/Downloads/Techn
 - **U4 - Isolation:** Never inject uploaded HTML into the application DOM. Design an isolated iframe supporting interactive HTML. Apply isolation to direct HTML responses too, without same-origin privileges.
 - **U5 - Quality:** Include basic loading, empty, success, and failure states. Use meaningful validation and important HTTP/storage boundary tests. Establish `npm run check` for ESLint, route type generation/typechecking, Vitest tests, and the production build. Distinguish mocked tests from live verification.
 - **U6 - Final verification:** On production, verify interactive HTML from a separate browser session, persistence after redeployment, duplicate filenames, invalid uploads, missing content, and rendering isolation.
-- **U7 - Workflow:** Work only in this project directory, sequentially in this chat. Preserve generated Next.js guidance. Implement only the authorized milestone, verify, report, and stop. No agents or worktrees by default; no OpenSpec, GSD, custom hooks, extra planning documents, unnecessary dependencies/abstractions, or unrelated refactoring. Required stories precede bonuses.
+- **U7 - Workflow:** Work only in this project directory, sequentially in this chat. Per the user's follow-up, remove the generated Next.js preamble from `AGENTS.md` and keep project-specific guidance. Implement only the authorized milestone, verify, report, and stop. No agents or worktrees by default; no OpenSpec, GSD, custom hooks, extra planning documents, unnecessary dependencies/abstractions, or unrelated refactoring. Required stories precede bonuses.
 - This authorization covers **M0 only**: create/update `REQUIREMENTS.md`, `AGENTS.md`, and `PLAN.md`. Do not start M1.
 
 ## Proposed assumptions and implementation decisions
@@ -76,7 +76,7 @@ Product acceptance is pending implementation; these are targets, not completed c
 | A9 | Loading, empty, upload success, and failure states are understandable; a failed request can be retried. | Browser walkthrough and mocked failure checks; M3/M4. |
 | A10 | `npm run check` passes ESLint, route type generation + strict typechecking, meaningful Vitest tests, and production build. Credentials stay server-side and untracked. | Record command results, source/diff review, and ignored-file checks; M1 onward, final M4. Mocked storage tests do not prove production access or durability. |
 
-M0 acceptance: only the three requested documents change; the generated Next.js block remains intact; PDF requirements, user additions, assumptions, and bonuses are separated; every milestone has scope, acceptance, verification, dependencies, and a 60-minute budget. Runtime and production acceptance remain unverified at M0.
+M0 acceptance: only the three requested documents change; `AGENTS.md` contains project-specific guidance without the generated Next.js preamble, per the user's follow-up; PDF requirements, user additions, assumptions, and bonuses are separated; every milestone has scope, acceptance, verification, dependencies, and a 60-minute budget. Runtime and production acceptance remain unverified at M0.
 
 ## Unresolved risks
 
