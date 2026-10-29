@@ -12,7 +12,10 @@ describe("validateHtmlUpload", () => {
     ["counter.html", ""],
     ["counter.html", "text/html; charset=utf-8"],
   ])("accepts %s with MIME %s and preserves interactive HTML", (name, type) => {
-    expect(validateHtmlUpload({ name, type, bytes })).toEqual({ ok: true, html });
+    expect(validateHtmlUpload({ name, type, bytes })).toEqual({
+      ok: true,
+      html,
+    });
   });
 
   it("preserves Unicode text and surrounding whitespace", () => {
@@ -20,6 +23,17 @@ describe("validateHtmlUpload", () => {
     expect(
       validateHtmlUpload({
         name: "привіт.html",
+        type: "text/html",
+        bytes: new TextEncoder().encode(content),
+      }),
+    ).toEqual({ ok: true, html: content });
+  });
+
+  it("preserves a UTF-8 byte order mark so stored bytes match the upload", () => {
+    const content = "\ufeff<p>Keep these bytes</p>";
+    expect(
+      validateHtmlUpload({
+        name: "bom.html",
         type: "text/html",
         bytes: new TextEncoder().encode(content),
       }),
@@ -36,10 +50,20 @@ describe("validateHtmlUpload", () => {
     ).toMatchObject({ ok: false, status: 400 });
   });
 
-  it.each(["", ".html", "counter.txt", "counter.html.exe", "counter.html ", "../counter.html", "folder\\counter.html"])(
+  it.each([
+    "",
+    ".html",
+    "counter.txt",
+    "counter.html.exe",
+    "counter.html ",
+    "../counter.html",
+    "folder\\counter.html",
+  ])(
     "rejects an invalid HTML filename %j even with an HTML MIME type",
     (name) => {
-      expect(validateHtmlUpload({ name, type: "text/html", bytes })).toMatchObject({
+      expect(
+        validateHtmlUpload({ name, type: "text/html", bytes }),
+      ).toMatchObject({
         ok: false,
         status: 415,
       });
@@ -49,7 +73,9 @@ describe("validateHtmlUpload", () => {
   it.each(["text/plain", "image/png", "application/octet-stream"])(
     "rejects a contradictory MIME type %s even with an HTML extension",
     (type) => {
-      expect(validateHtmlUpload({ name: "counter.html", type, bytes })).toMatchObject({
+      expect(
+        validateHtmlUpload({ name: "counter.html", type, bytes }),
+      ).toMatchObject({
         ok: false,
         status: 415,
       });
@@ -64,7 +90,11 @@ describe("validateHtmlUpload", () => {
     ["binary control byte", [0x3c, 0x70, 0x3e, 0x01]],
   ])("rejects %s", (_label, data) => {
     expect(
-      validateHtmlUpload({ name: "invalid.html", type: "text/html", bytes: new Uint8Array(data) }),
+      validateHtmlUpload({
+        name: "invalid.html",
+        type: "text/html",
+        bytes: new Uint8Array(data),
+      }),
     ).toMatchObject({ ok: false, status: 400 });
   });
 

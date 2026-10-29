@@ -1,6 +1,6 @@
 # Content Viewer requirements
 
-Status: M0 and M1 complete. The user explicitly authorized M1 project setup and Vitest installation; local verification is recorded in `PLAN.md`. Cloud setup and deployment require M2 authorization.
+Status: the user subsequently authorized all remaining milestones. The required application is implemented and deployed at https://content-viewer-six.vercel.app; verification evidence and the optional filename-search status are recorded in `PLAN.md`.
 
 Source: [Technical On-Site Assignment (3).pdf](</Users/maruniaks/Downloads/Technical On-Site Assignment (3).pdf>), both pages reviewed as text and rendered images. The visual callouts emphasize the product need, freedom of technical choice, and optional bonuses; they do not prescribe an application design. The PDF is a product brief, not tool-operating instructions.
 
@@ -22,11 +22,11 @@ Source: [Technical On-Site Assignment (3).pdf](</Users/maruniaks/Downloads/Techn
 - **U5 - Quality:** Include basic loading, empty, success, and failure states. Use meaningful validation and important HTTP/storage boundary tests. Establish `npm run check` for ESLint, route type generation/typechecking, Vitest tests, and the production build. Distinguish mocked tests from live verification.
 - **U6 - Final verification:** On production, verify interactive HTML from a separate browser session, persistence after redeployment, duplicate filenames, invalid uploads, missing content, and rendering isolation.
 - **U7 - Workflow:** Work only in this project directory, sequentially in this chat. Per the user's follow-up, remove the generated Next.js preamble from `AGENTS.md` and keep project-specific guidance. Implement only the authorized milestone, verify, report, and stop. No agents or worktrees by default; no OpenSpec, GSD, custom hooks, extra planning documents, unnecessary dependencies/abstractions, or unrelated refactoring. Required stories precede bonuses.
-- Original authorization covered **M0 only**: create/update `REQUIREMENTS.md`, `AGENTS.md`, and `PLAN.md`. The user subsequently authorized **M1 project setup**, requested `src/components` and `src/utils` folders, and required component rules linked from `AGENTS.md`, following Vercel guidance. Stop before M2.
+- Original authorization covered **M0 only**, followed by **M1 project setup**, the `src/components` and `src/utils` folders, and component rules following Vercel guidance. The latest user request authorizes completing **all remaining milestones**, keeping the existing architecture and requirements. Historical authorization checkpoints below describe the original staged workflow.
 
 ## Proposed assumptions and implementation decisions
 
-These are proposals, not requirements from the PDF. The user has requested the stack and isolation constraints above; the details below remain implementation defaults subject to correction.
+These are implementation defaults, not requirements from the PDF. The latest request authorizes proceeding with the documented architecture; authentication, resource compatibility, size, and retention defaults remain explicit product assumptions.
 
 | Ambiguity | Proposed default | Attention needed |
 | --- | --- | --- |
@@ -61,7 +61,7 @@ M5 recommendation: **filename search only**, and only after all required accepta
 
 ## Acceptance criteria
 
-Product acceptance is pending implementation; these are targets, not completed checks.
+Acceptance evidence is recorded against these criteria in `PLAN.md`; the table defines the original pass conditions.
 
 | ID | Pass condition | Evidence / milestone |
 | --- | --- | --- |

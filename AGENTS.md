@@ -1,7 +1,7 @@
 # Content Viewer workflow
 
 - Read `REQUIREMENTS.md` and `PLAN.md` before implementation. Keep PDF requirements, user additions, assumptions, and bonuses distinct.
-- Work only in this project directory, sequentially in this chat. Do not create agents or worktrees by default. Implement only the milestone the user authorizes, verify it, report results, then stop. Current authorization: M1 (project setup), per the user's request to proceed with the first implementation milestone; wait before M2.
+- Work only in this project directory, sequentially in this chat. Do not create agents or worktrees by default. The user subsequently authorized finishing all remaining milestones in this chat, including production deployment and verification. Preserve the architecture and record evidence in `PLAN.md`.
 - Use Next.js App Router, strict TypeScript, Tailwind, and npm. Use Next.js Route Handlers; no Express or NestJS. Consult installed Next.js guides before code changes.
 - For library/platform-specific work, resolve the library ID and fetch current documentation through Context7. Check against the installed version.
 - Put application components in `src/components` and helpers in `src/utils`, with tests beside the helpers. Keep `src/app` for routes, layouts, and route-specific framework files. Before component changes, read [component rules](src/components/RULES.md), based on Vercel's React/Next.js guidance.

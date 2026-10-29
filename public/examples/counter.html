@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>A little momentum</title>
+<style>body{font:18px system-ui,sans-serif;color:#173047;margin:0;display:grid;place-content:center;min-height:100vh;text-align:center;background:#eff6ff}main{padding:32px}h1{font-size:32px;letter-spacing:-1px}output{display:block;font-size:100px;font-weight:700;color:#1d4ed8;margin:16px}button{font:inherit;border:0;border-radius:10px;padding:14px 22px;background:#1d4ed8;color:white;cursor:pointer}button:focus-visible{outline:3px solid #17243b;outline-offset:4px}p{color:#52677c;max-width:380px;line-height:1.6}</style>
+<main><h1>A little momentum.</h1><p>Every good idea starts somewhere.<br>Add a little energy to this one.</p><output id="count" aria-live="polite">0</output><button id="add">Keep it going +1</button></main>
+<script>document.getElementById('add').addEventListener('click',()=>{document.getElementById('count').value=Number(document.getElementById('count').value)+1})</script></html>

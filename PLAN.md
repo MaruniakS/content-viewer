@@ -1,6 +1,6 @@
 # Content Viewer implementation plan
 
-Status: **M1 complete; stop before M2.** The user explicitly authorized M1 project setup and Vitest installation. Read `REQUIREMENTS.md` and `AGENTS.md` first. Work sequentially in this chat and project directory; do not create agents, worktrees, or extra planning documents. Each later milestone needs explicit authorization; verify, report results and limitations, then stop.
+Status: **M0–M5 complete.** The latest user request authorized finishing all remaining milestones. Work stayed sequentially in this chat and project directory, with no agents, worktrees, or extra planning documents. Earlier per-milestone authorization checkpoints are historical and superseded by this request.
 
 Architecture: keep Next.js App Router, strict TypeScript, Tailwind, and npm. Use Route Handlers plus private Vercel Blob, deriving the initial gallery catalog from object listings without a separate database. Serve uploaded HTML through a response-sandboxed route into an iframe that allows scripts without same-origin privileges. Details and proposed compatibility defaults are in `REQUIREMENTS.md`.
 
@@ -101,10 +101,10 @@ These are target active-work allocations for the assignment, including M0; autho
 
 - [x] M0 - Documents prepared; document verification recorded below.
 - [x] M1 - Running baseline, folder guidance, and full quality check verified locally.
-- [ ] M2 - Not authorized or started.
-- [ ] M3 - Not authorized or started.
-- [ ] M4 - Not authorized or started.
-- [ ] M5 - Optional; not authorized or started.
+- [x] M2 - Existing production project and private store connected and verified live.
+- [x] M3 - Upload, paginated gallery, and isolated interactive viewer deployed.
+- [x] M4 - Required local and production checks passed; evidence below.
+- [x] M5 - Complete-catalog filename search deployed and verified, including matching, no-match, and clearing.
 
 M0 evidence: both PDF pages reviewed as text and rendered images; scaffold/configuration/guidance inspected; document scope and acceptance coverage reviewed. `git diff --check` and document whitespace checks passed; only the three requested documents changed; the generated Next.js preamble was removed per the user's follow-up; temporary PDF renders were removed. No runtime or production success is claimed.
 
@@ -117,3 +117,32 @@ M1 evidence (2026-10-29):
 - Starting Next.js reproduced automatic reinsertion of the generated agent preamble. Set documented `agentRules: false`; the restarted dev server removed the managed block and preserved project guidance. Existing ESLint, strict TypeScript, and Tailwind/Turbopack configuration otherwise remain intact.
 - The first restricted build could not fetch Google fonts and cached a CSS-worker port-permission failure. Cleared only generated `.next/cache/turbopack` and reran the full check with required network/process permissions; all stages passed. Fresh builds need Google's font service for the starter's Geist fonts.
 - Final source/diff review and `git diff --check` passed. M1 is local baseline evidence only; production access, persistence, HTTP/storage boundaries, and browser isolation remain pending their milestones. M2 is not authorized or started.
+
+M2–M5 evidence (2026-10-29):
+
+- Authorization: the user requested finishing all milestones immediately while preserving architecture and React/Vercel practices. This superseded the earlier M1 stopping point. All work stayed in this checkout, sequentially, without agents, worktrees, extra planning documents, commits, or pushes.
+- Production: **https://content-viewer-six.vercel.app** on the existing `content-viewer` Vercel project. Final deployment `dpl_FhEzGiK7ZuEB5uKLdL48dqbkxwj1` reached `READY` with target `production`. No project or store replacement was required. Deployment-specific URLs retain the account's default protection; the stable production alias was verified publicly without bypass credentials.
+- Storage: existing `content-viewer-files` store `store_sCjVyFPg0VRySmTU`, region `iad1`, confirmed **Private** by Vercel. Configured the non-secret `BLOB_STORE_ID` in Production, Preview, and Development. The official `@vercel/blob` 2.8.2 SDK supports managed OIDC; credentials remain server-only in deployment settings/ignored `.env.local`. A live temporary object passed write/list/read, anonymous direct access returned **403**, and only that smoke object was deleted.
+- Architecture: server-rendered gallery and viewer, small client upload/refresh/share/iframe controls, Node Route Handlers, and one server-only Blob module. Object listings supply the catalog, including opaque next-page cursors. New upload keys combine a UUID and encoded filename; duplicate names remain independent. The existing UUID/filename object layout stays discoverable/readable without migrating bytes. No database or local persistence was added.
+- Verification fixes: retained UTF-8 BOMs to preserve exact bytes; validated filename control characters and a 240-byte filename bound; bounded actual multipart streams even without Content-Length; rejected cross-origin browser uploads. Removed the root streaming loading boundary so a missing viewer returns actual HTTP 404, retaining gallery/iframe loading states. Used system fonts to remove build-time font-network dependence.
+- Build environment: the first restricted build cached a Turbopack CSS-worker port-permission error. Cleared only generated `.next/cache/turbopack` and reran with the required process permissions. Final `npm run check` exited **0**: ESLint, generated route types plus strict TypeScript, **56/56 Vitest tests**, and optimized production build. A compatible scoped Zod 4 patch override fixes the new SDK's transitive advisory; npm reported **0 vulnerabilities**. `git diff --check` passed; `.env.local` and `.vercel/project.json` are ignored; client build assets contained no credential-variable references.
+- Test evidence boundary: 27 real validation tests and 29 HTTP/storage tests. The latter exercise application handlers/storage transformations while mocking only the external Blob SDK and the server-only import guard. Tests cover request/type/size/UTF-8 failures, no writes on invalid input, duplicate keys, pagination, search beyond page one, existing key compatibility, missing objects, safe provider outages, and raw response isolation. Tests were observed failing before their implementations/fixes. Forced provider outages were **mocked**, not induced in production.
+
+| Acceptance | Observed evidence | Result |
+| --- | --- | --- |
+| A1 | Real local browser upload showed success and an immediately updated catalog. Anonymous production multipart uploads returned 201 only after Blob writes; retrieved HTML matched submitted bytes. | Pass |
+| A2 | Live production catalog visible in IAB and an independent Safari **Private Browsing** window. Cursor continuation is covered at the real application/SDK boundary with mocked paginated SDK responses. | Pass; live multi-page volume was not manufactured |
+| A3 | Local counter changed 0→1 inside its iframe. A production counter uploaded before redeployment also changed 0→1 in Safari Private Browsing. | Pass, actual browsers |
+| A4 | Stable production HTTPS URL returned 200 to anonymous Node fetch and opened in Safari Private Browsing without an owner session or bypass. | Pass |
+| A5 | Recorded three production uploads before redeployment; all three links returned identical HTML afterward. Repeated byte comparisons after the final search deployment also passed for three fixtures. A preexisting counter rendered/interacted in the independent private session. Two counter examples remain; redundant disposable fixtures were cleaned only after comparisons. | Pass, real store and redeployments |
+| A6 | Same-name production uploads returned distinct IDs and retained their different HTML. Two distinct counter examples remain in the collection. | Pass |
+| A7 | Production empty/wrong-type/oversized/invalid-UTF-8 files returned 400/415/413/400; malformed multipart returned 400. Missing raw content and missing viewer returned 404. Provider failures return safe 503s in mocked tests. | Pass; outages mocked |
+| A8 | Production adversarial fixture in iframe showed inline interaction working, opaque origin `null`, and blocked parent DOM, top navigation, cookies, local/session storage, popup, fetch, and remote image access. Direct raw navigation also showed opaque origin and denied cookies/storage/popups/network/images. Actual HTTP CSP sandbox, nosniff, and no-store headers checked. No same-origin privilege granted. | Pass, headers plus real browser behavior |
+| A9 | Observed local empty/loading/success states, production collection loading, a production empty-upload error message, working refresh/reload controls, and search match/no-match/clear states. The failed upload retained a usable retry form. | Pass |
+| A10 | Final full check passed; 56 tests, strict typechecking, production build, ignored credentials, client-asset scan, and source/diff review. | Pass |
+
+M5: filename search is case-insensitive, scans every listing page on the server, and exposes the same behavior through `GET /api/content?q=…`. Mocked boundary tests explicitly match an item on the second storage page. Production HTTP and browser checks verified matches, no matches, and clearing the filter. No other bonus features were introduced.
+
+Live verification scripts, temporary fixture sources, and a final production screenshot are in ignored `.vercel/verification/`; no secret values are recorded here. Cleanup removed only five exact disposable objects created by this run, retaining two interactive counter examples and every preexisting or externally created upload. Browser viewport overrides did not alter IAB's actual 528px viewport; that observed width had no horizontal overflow, and Safari separately rendered and interacted with the viewer. No unsupported claim of a 375px/1280px viewport check is made.
+
+Remaining product assumptions: anonymous public uploads, self-contained files, blocked remote resources, a small catalog, and no promised backup/retention guarantees. These are documented scope limits rather than unfinished assignment stories. No company authentication policy or confidential-content suitability is claimed.
