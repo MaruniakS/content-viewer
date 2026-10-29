@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Content Viewer
 
-## Getting Started
+Next.js 16 App Router project using strict TypeScript, React 19, Tailwind 4, ESLint, and npm. M1 establishes the running starter and validation checks; the upload/gallery/viewer flow and Vercel storage/deployment belong to later milestones in [PLAN.md](PLAN.md).
 
-First, run the development server:
+## Local development
 
-```bash
+Use Node.js 24 LTS and npm (M1 verified with Node 24.22.1).
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [localhost:3000](http://localhost:3000). M1 needs no credentials or environment file. The starter uses `next/font/google` for Geist, so a fresh build needs access to Google's font service.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `src/app`: App Router pages, layouts, route handlers, and global styles.
+- `src/components`: application UI components. Read [component rules](src/components/RULES.md), also linked from [AGENTS.md](AGENTS.md). The rules follow Vercel's React/Next.js guidance.
+- `src/utils`: non-UI helpers and their colocated tests. `upload-validation.ts` validates file metadata and UTF-8 bytes; it does not parse, sanitize, or sandbox HTML.
 
-## Learn More
+## Quality checks
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+npm run check
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Runs ESLint, Next.js route type generation and strict TypeScript checking, Vitest, then a production build, stopping at the first failure. Vitest uses a Node environment and fails if no tests are found.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Individual commands are `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`. Use `npm run test:watch` during development. Vitest 4 is used to retain compatibility with the scaffold's Node type definitions.
 
-## Deploy on Vercel
+The validation tests cover HTML extensions/MIME types, empty input, invalid UTF-8/binary input, and the 1 MiB byte limit. HTTP/storage tests and live persistence/isolation checks will be added in their authorized milestones. A local build or unit test does not establish production behavior.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project guidance
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Read [REQUIREMENTS.md](REQUIREMENTS.md), [PLAN.md](PLAN.md), and [AGENTS.md](AGENTS.md) before implementation. Next.js automatic agent-rule generation is disabled to preserve the project-owned guidance; consult `node_modules/next/dist/docs/` for the installed version's documentation.

@@ -1,9 +1,10 @@
 # Content Viewer workflow
 
 - Read `REQUIREMENTS.md` and `PLAN.md` before implementation. Keep PDF requirements, user additions, assumptions, and bonuses distinct.
-- Work only in this project directory, sequentially in this chat. Do not create agents or worktrees by default. Implement only the milestone the user authorizes, verify it, report results, then stop. Current authorization: M0 only; wait before M1.
+- Work only in this project directory, sequentially in this chat. Do not create agents or worktrees by default. Implement only the milestone the user authorizes, verify it, report results, then stop. Current authorization: M1 (project setup), per the user's request to proceed with the first implementation milestone; wait before M2.
 - Use Next.js App Router, strict TypeScript, Tailwind, and npm. Use Next.js Route Handlers; no Express or NestJS. Consult installed Next.js guides before code changes.
 - For library/platform-specific work, resolve the library ID and fetch current documentation through Context7. Check against the installed version.
+- Put application components in `src/components` and helpers in `src/utils`, with tests beside the helpers. Keep `src/app` for routes, layouts, and route-specific framework files. Before component changes, read [component rules](src/components/RULES.md), based on Vercel's React/Next.js guidance.
 - Proposed storage: private Vercel Blob with no separate database initially; derive the initial catalog from object listings and honor pagination. Uploaded content must persist across users, refreshes, and deployments.
 - Keep storage access server-only and credentials in deployment environment settings or ignored local environment files, outside version control, client bundles, and logs. Never expose secrets through `NEXT_PUBLIC_*`.
 - Never inject uploaded HTML into the application DOM. Design an isolated iframe supporting interactive HTML with `sandbox="allow-scripts"` and no `allow-same-origin` or escape permissions. Enforce matching HTTP CSP sandboxing on direct HTML responses too; never grant uploaded content same-origin privileges. Follow the resource policy in `REQUIREMENTS.md`.
