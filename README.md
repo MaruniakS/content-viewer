@@ -1,36 +1,51 @@
 # Content Viewer
 
-Next.js 16 App Router project using strict TypeScript, React 19, Tailwind 4, ESLint, and npm. M1 establishes the running starter and validation checks; the upload/gallery/viewer flow and Vercel storage/deployment belong to later milestones in [PLAN.md](PLAN.md).
+Upload, browse, and share interactive HTML at **[content-viewer-six.vercel.app](https://content-viewer-six.vercel.app)**.
+
+## Use it
+
+Choose one `.html` or `.htm` file and select **Upload HTML**. Open its gallery entry, interact with the content, and use **Copy share link** to share the viewer. Duplicate filenames create separate entries. Search matches filenames across every storage page; clear the search to return to the paginated collection.
+
+Files must contain nonempty UTF-8 text, be at most **1 MiB**, and have filenames no longer than 240 UTF-8 bytes. Include scripts, styles, and images inside the file. External resources, API requests, relative assets, ZIPs, origin storage, popups, and forms are unsupported. Inline JavaScript and embedded images work. A downloadable counter example is available at `/examples/counter.html` and in `public/examples/counter.html`.
+
+The demo allows public browsing and anonymous uploads. Use material suitable for public sharing. Accounts, access control, deletion/replacement, quotas, and backups are outside this assignment's required slice.
 
 ## Local development
 
-Use Node.js 24 LTS and npm (M1 verified with Node 24.22.1).
+Use Node.js 24 LTS and npm:
 
 ```sh
 npm ci
+npx vercel link --project content-viewer
+npx vercel env pull .env.local
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000). M1 needs no credentials or environment file. The starter uses `next/font/google` for Geist, so a fresh build needs access to Google's font service.
+The linked project uses the private **content-viewer-files** Blob store. Keep the same store connected to Production, Preview, and Development. `BLOB_STORE_ID` identifies the store; Vercel supplies managed OIDC credentials in deployment. `vercel env pull` provides ignored local development credentials. A server-only `BLOB_READ_WRITE_TOKEN` also works when managed credentials are unavailable; never use a `NEXT_PUBLIC_*` secret. `.env*` and `.vercel/` are ignored. No separate database or local filesystem catalog is used.
 
-## Structure
+## Architecture
 
-- `src/app`: App Router pages, layouts, route handlers, and global styles.
-- `src/components`: application UI components. Read [component rules](src/components/RULES.md), also linked from [AGENTS.md](AGENTS.md). The rules follow Vercel's React/Next.js guidance.
-- `src/utils`: non-UI helpers and their colocated tests. `upload-validation.ts` validates file metadata and UTF-8 bytes; it does not parse, sanitize, or sandbox HTML.
+Next.js 16 App Router, React 19, strict TypeScript, Tailwind 4, npm, and Node Route Handlers:
 
-## Quality checks
+- `/`: server-rendered paginated gallery, complete-catalog filename search, and a small client upload form.
+- `/view/[id]`: server-validated viewer and client iframe with loading/reload/share feedback.
+- `POST /api/content`: bounded multipart parsing, validation before writes, and unique private Blob keys.
+- `GET /api/content?cursor=…`: current metadata page. `?q=…` searches the complete catalog.
+- `GET /api/content/[id]`: streams private HTML with enforced HTTP CSP sandboxing and no caching.
+
+Components live in `src/components`; helpers and their tests live in `src/utils`. Storage is guarded by `server-only`. Listings supply the catalog and carry SDK cursors through the application. Existing UUID/filename objects remain readable without migration. Uploaded bytes are preserved, including UTF-8 byte order marks.
+
+HTML never enters the application DOM. Both iframe permissions and the raw response's enforced CSP allow scripts while denying same-origin privileges. Default sources and network connections are blocked; inline scripts/styles and embedded image/font data are permitted. Direct navigation retains the opaque-origin sandbox. The application never redirects visitors to private storage URLs.
+
+## Checks and deployment
 
 ```sh
 npm run check
+npx vercel deploy --prod --yes
 ```
 
-Runs ESLint, Next.js route type generation and strict TypeScript checking, Vitest, then a production build, stopping at the first failure. Vitest uses a Node environment and fails if no tests are found.
+The check runs ESLint, Next route type generation plus strict typechecking, Vitest, and a production build. Individual scripts are `lint`, `typecheck`, `test`, `test:watch`, and `build`. Builds use system fonts and do not fetch fonts from Google. A targeted compatible Zod 4 override removes a transitive Blob SDK advisory.
 
-Individual commands are `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`. Use `npm run test:watch` during development. Vitest 4 is used to retain compatibility with the scaffold's Node type definitions.
+Tests cover real validation and HTTP/storage integration with only the external Blob SDK mocked. They include invalid requests, size limits including streamed bodies, duplicate keys, pagination/search, legacy keys, missing items, safe outages, and response policies. Mocked tests do not prove live durability or browser isolation. Actual production evidence, including independent Safari Private Browsing and before/after redeployment byte comparisons, is recorded in [PLAN.md](PLAN.md).
 
-The validation tests cover HTML extensions/MIME types, empty input, invalid UTF-8/binary input, and the 1 MiB byte limit. HTTP/storage tests and live persistence/isolation checks will be added in their authorized milestones. A local build or unit test does not establish production behavior.
-
-## Project guidance
-
-Read [REQUIREMENTS.md](REQUIREMENTS.md), [PLAN.md](PLAN.md), and [AGENTS.md](AGENTS.md) before implementation. Next.js automatic agent-rule generation is disabled to preserve the project-owned guidance; consult `node_modules/next/dist/docs/` for the installed version's documentation.
+Read [REQUIREMENTS.md](REQUIREMENTS.md), [AGENTS.md](AGENTS.md), and [component rules](src/components/RULES.md) for the scope and conventions. The installed Next.js guides are under `node_modules/next/dist/docs/`; automatic generated agent rules remain disabled.
